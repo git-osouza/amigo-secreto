@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amigo Secreto</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background-image: url('./img/natal.jpg');
+    }
+
+    h1 {
+      color: white;
+    }
+
+    .form-label {
+      color: white;
+    }
+
+    .btn-success {
+      font-weight: 500;
+      border-color: none;
+    }
+
+    #result {
+      color: white;
+      font-size: larger;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid d-flex justify-content-center align-items-center min-vh-100">
+    <div class="container text-center">
+      <h1>Bem vindo(a)</h1>
+      <h1>Sorteador amigo secreto</h1>
+      <form id="form-sortear">
+        <div class="mb-3">
+          <label for="sort-name" class="form-label">Seu Nome:</label>
+          <input type="text" class="form-control" id="sort-name" required />
+        </div>
+        <button type="submit" class="btn btn-success">Sortear</button>
+      </form>
+      <div id="result" class="mt-3"></div>
+    </div>
+  </div>
+  <script>
+    const sortForm = document.getElementById('form-sortear');
+    const result = document.getElementById('result');
+
+    sortForm.onsubmit = async (e) => {
+      if (verificarSeJaRealizouSorteio()) {
+        alert("Você já realizou o sorteio!");
+        return;
+      }
+      e.preventDefault();
+      const name = document.getElementById('sort-name').value;
+      const res = await fetch('/secret-friend/draw', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+      const data = await res.json();
+      if (data && data.secretFriend) {
+        result.innerHTML = `Você sorteou: <br><strong>🎉🎉 ${data.secretFriend} 🎉🎉</strong>`;
+        registrarSorteioRealizado(name);
+      } else {
+        result.innerHTML = `Humm, aconteceu algo 🧐<br>  <strong>${data.message}</strong>`;
+      }
+
+    };
+
+    function verificarSeJaRealizouSorteio() {
+      const sorteioRealizado = sessionStorage.getItem('sorteioRealizado');
+      return sorteioRealizado !== null;
+    }
+
+    function registrarSorteioRealizado(nomeParticipante) {
+      sessionStorage.setItem('sorteioRealizado', nomeParticipante);
+    }
+  </script>
+</body>
+
+</html>
