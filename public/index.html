@@ -9,6 +9,8 @@
   <style>
     body {
       background-image: url('./img/natal.jpg');
+      background-size: cover;
+      background-repeat: no-repeat;
     }
 
     h1 {
@@ -47,16 +49,20 @@
     </div>
   </div>
   <script>
+    const allowMultipleDraw = ['PEDRO', 'AGATHA', 'GI', 'BENJAMIN'];
     const sortForm = document.getElementById('form-sortear');
     const result = document.getElementById('result');
 
     sortForm.onsubmit = async (e) => {
-      if (verificarSeJaRealizouSorteio()) {
+     
+      e.preventDefault();
+      const name = document.getElementById('sort-name').value;
+
+      if (verificarSeJaRealizouSorteio() && !allowMultipleDraw.includes(name.toUpperCase())) {
         alert("Você já realizou o sorteio!");
         return;
       }
-      e.preventDefault();
-      const name = document.getElementById('sort-name').value;
+
       const res = await fetch('/secret-friend/draw', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

@@ -7,7 +7,7 @@ import { Participant } from './amigo-secreto/participant';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
-      database: 'secret-friend.db',
+      database: 'localDB.db',
       entities: [Participant],
       synchronize: true,
     }),

@@ -41,4 +41,9 @@ export class AmigoSecretoController {
   async remove(){
     return await this.amigoSecretoService.removeAll();
   }
+
+  @Get('allDraw')
+  async allDraw(){
+    return await this.amigoSecretoService.getDrawnList();
+  }
 }

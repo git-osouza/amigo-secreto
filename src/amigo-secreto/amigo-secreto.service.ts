@@ -20,7 +20,7 @@ export class AmigoSecretoService {
         const participant = await this.participantRepository.findOneBy({ name });
 
         if (participant == null) {
-            throw new HttpException('Não há participantes elegíveis para sortear.', HttpStatus.BAD_REQUEST);
+            throw new HttpException('Seu nome não está cadastrado como participante!', HttpStatus.BAD_REQUEST);
         }
 
         if (participant.secretFriendId !== null) {
@@ -92,5 +92,17 @@ export class AmigoSecretoService {
         }
 
         return secretFriend;
+    }
+
+    async getDrawnList() {
+        let list = this.getAllParticipants();
+        if(list){
+            (await list).forEach(item => {
+                item['draw'] = item.secretFriendId !== null;
+                item.secretFriendId = null;
+            })
+        }
+
+        return list;
     }
 }
