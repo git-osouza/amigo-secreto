@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AmigoSecretoService } from './amigo-secreto.service';
 import { AmigoSecretoController } from './amigo-secreto.controller';
-import { Participant } from './participant';
+import { Participant } from './repository/participant.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({

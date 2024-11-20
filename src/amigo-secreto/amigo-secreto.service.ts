@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Participant } from './participant';
+import { Participant } from './repository/participant.entity';
 
 @Injectable()
 export class AmigoSecretoService {
@@ -11,9 +11,14 @@ export class AmigoSecretoService {
     ) { }
 
     async addParticipant(name: string) {
-        const participant = new Participant();
-        participant.name = name.toUpperCase();
-        return this.participantRepository.save(participant);
+        try {
+            const participant = new Participant();
+            participant.name = name.toUpperCase();
+            return await this.participantRepository.save(participant);
+        } catch (error) {
+            throw new HttpException('Já existe um participante com este nome!', HttpStatus.BAD_REQUEST);
+        }
+        
     }
 
     async drawFriend(name: string) {

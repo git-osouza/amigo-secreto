@@ -29,7 +29,16 @@
         body: JSON.stringify({ name }),
       });
       const data = await res.json();
-      alert('Participante Adicionado!');
+      if (data && data.name) {
+        alert('Participante Adicionado!');
+        document.getElementById('name').value = '';
+        document.getElementById('name').focus();
+      }else{
+        alert(`Error: ${data.message}`);
+        document.getElementById('name').value = '';
+        document.getElementById('name').focus();
+      }
+     
     };
 
   </script>
