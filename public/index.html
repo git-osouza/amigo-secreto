@@ -43,7 +43,7 @@
           <label for="sort-name" class="form-label">Seu Nome:</label>
           <input type="text" class="form-control" id="sort-name" required />
         </div>
-        <button type="submit" class="btn btn-success">Sortear</button>
+        <button type="submit" class="btn btn-success" tabindex="0">Sortear</button>
       </form>
       <div id="result" class="mt-3"></div>
     </div>
@@ -51,20 +51,37 @@
   <script>
     const sortForm = document.getElementById('form-sortear');
     const result = document.getElementById('result');
+    const submitButton = sortForm.querySelector('button[type="submit"]');
 
     sortForm.onsubmit = async (e) => {
-     
       e.preventDefault();
+
       const name = document.getElementById('sort-name').value;
 
-      const res = await fetch('/secret-friend/draw', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
-      });
-      const data = await res.json();
-      result.innerHTML = (data && data.secretFriend)? `Você sorteou: <br><strong>🎉🎉 ${data.secretFriend} 🎉🎉</strong>` : `Humm, aconteceu algo 🧐<br>  <strong>${data.message}</strong>`;
+      submitButton.disabled = true;
+      result.innerHTML = 'Sorteando... ⏳';
+
+      try {
+        const res = await fetch('/secret-friend/draw', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name }),
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+          result.innerHTML = `Você sorteou: <br><strong>🎉🎉 ${data.secretFriend} 🎉🎉</strong>`;
+        } else {
+          result.innerHTML = `Humm, aconteceu algo 🧐<br>  <strong>${data.message}</strong>`;
+        }
+      } catch (error) {
+        result.innerHTML = 'Erro de conexão. Tente novamente mais tarde.';
+      } finally {
+        submitButton.disabled = false;
+      }
     };
+
   </script>
 </body>
 
