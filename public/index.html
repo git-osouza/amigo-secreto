@@ -49,7 +49,6 @@
     </div>
   </div>
   <script>
-    const allowMultipleDraw = ['PEDRO', 'AGATHA', 'GI', 'BENJAMIN'];
     const sortForm = document.getElementById('form-sortear');
     const result = document.getElementById('result');
 
@@ -58,34 +57,14 @@
       e.preventDefault();
       const name = document.getElementById('sort-name').value;
 
-      if (verificarSeJaRealizouSorteio() && !allowMultipleDraw.includes(name.toUpperCase())) {
-        alert("Você já realizou o sorteio!");
-        return;
-      }
-
       const res = await fetch('/secret-friend/draw', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name }),
       });
       const data = await res.json();
-      if (data && data.secretFriend) {
-        result.innerHTML = `Você sorteou: <br><strong>🎉🎉 ${data.secretFriend} 🎉🎉</strong>`;
-        registrarSorteioRealizado(name);
-      } else {
-        result.innerHTML = `Humm, aconteceu algo 🧐<br>  <strong>${data.message}</strong>`;
-      }
-
+      result.innerHTML = (data && data.secretFriend)? `Você sorteou: <br><strong>🎉🎉 ${data.secretFriend} 🎉🎉</strong>` : `Humm, aconteceu algo 🧐<br>  <strong>${data.message}</strong>`;
     };
-
-    function verificarSeJaRealizouSorteio() {
-      const sorteioRealizado = sessionStorage.getItem('sorteioRealizado');
-      return sorteioRealizado !== null;
-    }
-
-    function registrarSorteioRealizado(nomeParticipante) {
-      sessionStorage.setItem('sorteioRealizado', nomeParticipante);
-    }
   </script>
 </body>
 
